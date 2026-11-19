@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CS 191: Setup for GitHub and Deployment</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <p class="eyebrow">CS 191 · Before class</p>
+  <h1>Setup</h1>
+  <nav aria-label="Pages">
+    <a href="index.html">← Back to class</a>
+  </nav>
+</header>
+
+<main>
+
+<section>
+  <p>Please do these before class so we can spend our time building, not installing. It takes about 30 minutes. If you missed it, do it now. Your cohort can help.</p>
+
+  <div class="step" id="laptop">
+    <h3><span class="step-number">1</span> Bring your laptop, charged</h3>
+  </div>
+
+  <div class="step" id="tutorial">
+    <h3><span class="step-number">2</span> Finish the GitHub tutorial</h3>
+    <p>Finish the GitHub Skills "Introduction to GitHub" tutorial, and make sure you can sign in to <a href="https://github.com">github.com</a>.</p>
+  </div>
+
+  <div class="step" id="git">
+    <h3><span class="step-number">3</span> Install Git</h3>
+    <div class="os">
+      <div>
+        <h4>Mac</h4>
+        <p>Open Terminal and run:</p>
+        <pre class="command">git --version</pre>
+        <p>If a prompt appears, click <strong>Install</strong>.</p>
+      </div>
+      <div>
+        <h4>Windows</h4>
+        <p>Open PowerShell and run:</p>
+        <pre class="command">winget install --id Git.Git -e --source winget</pre>
+        <p>Then close PowerShell and open a new window.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" id="git-check">
+    <h3><span class="step-number">4</span> Check that it worked</h3>
+    <pre class="command">git --version</pre>
+    <p class="see">A version number, like <code>git version 2.47.1</code>.</p>
+  </div>
+
+  <div class="step" id="git-config">
+    <h3><span class="step-number">5</span> Tell Git who you are</h3>
+    <p>Run these two commands with your own name and the email address on your GitHub account. Git records them in every commit you make.</p>
+    <pre class="command">git config --global user.name "Your Name"</pre>
+    <pre class="command">git config --global user.email "you@example.com"</pre>
+  </div>
+
+  <div class="step" id="gh">
+    <h3><span class="step-number">6</span> Install the GitHub CLI</h3>
+    <div class="os">
+      <div>
+        <h4>Mac</h4>
+        <p>First install Homebrew: copy the install command from <a href="https://brew.sh">brew.sh</a> into Terminal. Enter your Mac password when asked. Nothing shows on the screen as you type, which is normal.</p>
+        <p>When it finishes, run the commands it prints under <strong>Next steps</strong>. Then run:</p>
+        <pre class="command">brew install gh</pre>
+      </div>
+      <div>
+        <h4>Windows</h4>
+        <pre class="command">winget install --id GitHub.cli</pre>
+        <p>Then close PowerShell and open a new window.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" id="gh-login">
+    <h3><span class="step-number">7</span> Sign in to GitHub from the terminal</h3>
+    <pre class="command">gh auth login</pre>
+    <p>Choose <strong>GitHub.com</strong>, then <strong>HTTPS</strong>, then sign in with a web browser. It gives you a one-time code to paste into the browser.</p>
+  </div>
+
+  <div class="step" id="gh-check">
+    <h3><span class="step-number">8</span> Check that it worked</h3>
+    <pre class="command">gh auth status</pre>
+    <p class="see">That you're logged in to github.com, with your GitHub username.</p>
+  </div>
+
+  <div class="step" id="codex">
+    <h3><span class="step-number">9</span> Install Codex CLI</h3>
+    <p>This is the version of Codex that runs in your terminal, so it can work directly with the files on your laptop. ChatGPT in the browser can't do that, so it isn't enough for this class.</p>
+    <div class="os">
+      <div>
+        <h4>Mac</h4>
+        <pre class="command">curl -fsSL https://chatgpt.com/codex/install.sh | sh</pre>
+      </div>
+      <div>
+        <h4>Windows</h4>
+        <pre class="command">powershell -ExecutionPolicy ByPass -c "irm https://chatgpt.com/codex/install.ps1 | iex"</pre>
+      </div>
+    </div>
+    <p class="alt">Already using the Codex extension in VS Code? You can use that instead.</p>
+  </div>
+
+  <div class="step" id="codex-login">
+    <h3><span class="step-number">10</span> Sign in to Codex</h3>
+    <p>Open a new terminal window and run:</p>
+    <pre class="command">codex</pre>
+    <p>Choose <strong>Sign in with ChatGPT</strong>, and use your BYU ChatGPT account.</p>
+  </div>
+
+  <div class="step" id="app">
+    <h3><span class="step-number">11</span> Have your AI Build Day app on your laptop</h3>
+    <p>Put it in its own folder. No working app? Use the instructor's hangman game instead. On Windows, right-click the zip and choose <strong>Extract all</strong>.</p>
+    <p><a class="button" href="hangman.zip" download>Download hangman.zip</a></p>
+  </div>
+
+  <p class="encourage">If you get stuck, ask your cohort first, then post a Discussion in Canvas.</p>
+</section>
+
+</main>
+
+<script src="site.js"></script>
+</body>
+</html>

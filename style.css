@@ -1,0 +1,379 @@
+/* Base styles follow the CS 191 AI-levels site so the class sites look alike. */
+
+:root {
+  --text: #1a1a1a;
+  --muted: #555;
+  --bg: #ffffff;
+  --panel: #f4f5f7;
+  --border: #d6d9de;
+  --accent: #002e5d;
+  --accent-text: #ffffff;
+  --callout: #eef3fa;
+  --git: #0f6b5c;
+  --git-bg: #ebf6f3;
+  --new: #b4530a;
+  --new-bg: #fbeee2;
+  --todo-bg: #fff3c4;
+  --todo-text: #5c4400;
+  font-size: 18px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #ececec;
+    --muted: #aaa;
+    --bg: #16181c;
+    --panel: #23262c;
+    --border: #3a3e46;
+    --accent: #6ea8ff;
+    --accent-text: #0b1220;
+    --callout: #1d2633;
+    --git: #5cc9b4;
+    --git-bg: #172723;
+    --new: #f0a35c;
+    --new-bg: #33261a;
+    --todo-bg: #3d3416;
+    --todo-text: #f5dc8c;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.55;
+  color: var(--text);
+  background: var(--bg);
+}
+
+header, main {
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+header { padding-top: 2rem; }
+
+h1 { font-size: 2.2rem; margin: 0.2rem 0 1rem; }
+h2 { font-size: 1.6rem; margin: 0 0 0.75rem; }
+h3 { font-size: 1.15rem; margin: 1.5rem 0 0.5rem; }
+h4 { margin: 1rem 0 0.25rem; }
+
+a { color: var(--accent); }
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  padding: 0.6rem 0;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+nav a { text-decoration: none; font-weight: 600; }
+nav a:hover { text-decoration: underline; }
+
+section {
+  padding: 2rem 0;
+  border-bottom: 1px solid var(--border);
+  scroll-margin-top: 3.5rem;
+}
+
+section:last-child { border-bottom: none; }
+
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+td:first-child { white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+.button {
+  display: inline-block;
+  margin: 0 0.5rem 0.5rem 0;
+  padding: 0.55rem 1rem;
+  border-radius: 6px;
+  background: var(--accent);
+  color: var(--accent-text);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.button.secondary {
+  background: transparent;
+  color: var(--accent);
+  border: 2px solid var(--accent);
+}
+
+.callout {
+  padding: 0.9rem 1.1rem;
+  border-left: 5px solid var(--accent);
+  background: var(--callout);
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.note {
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  background: var(--panel);
+}
+
+.encourage {
+  margin-top: 1.25rem;
+  padding: 0.9rem 1.1rem;
+  border-radius: 8px;
+  background: var(--callout);
+  border-left: 5px solid var(--accent);
+}
+
+.alt {
+  margin: 0.75rem 0 0.25rem;
+  padding: 0.6rem 0.9rem;
+  border-left: 3px solid var(--border);
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+.alt p { margin: 0.2rem 0; }
+
+/* Numbered action steps */
+
+.step {
+  margin: 2rem 0 0;
+  scroll-margin-top: 3.5rem;
+}
+
+.step > h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 0.5rem;
+  font-size: 1.3rem;
+}
+
+.step-number {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-text);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.step p { margin: 0.4rem 0; }
+.step ol, .step ul { margin: 0.4rem 0; padding-left: 1.4rem; }
+.step li { margin: 0.2rem 0; }
+
+.optional-tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* "You should see" line after each step, so cohorts can check each other */
+
+.see {
+  margin: 0.75rem 0 0;
+  padding: 0.55rem 0.9rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+
+.see::before {
+  content: "You should see: ";
+  font-weight: 700;
+}
+
+/* Git explanation boxes: visually distinct from the action steps */
+
+.explain {
+  margin: 1.25rem 0 0;
+  padding: 1rem 1.2rem 1.1rem;
+  border: 2px solid var(--git);
+  border-radius: 10px;
+  background: var(--git-bg);
+}
+
+.explain > .eyebrow { color: var(--git); }
+.explain > h4 { margin: 0.1rem 0 0.5rem; font-size: 1.15rem; }
+.explain p { margin: 0.45rem 0; }
+.explain ul { margin: 0.4rem 0; padding-left: 1.4rem; }
+
+.figure {
+  margin: 0.9rem 0;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: var(--bg);
+}
+
+.figure svg { display: block; width: 100%; height: auto; margin: 0 auto; }
+
+.figure figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+/* SVG drawings use the same color tokens, so they work in light and dark mode. */
+
+svg text { fill: var(--text); font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size: 15px; }
+svg .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 14px; }
+svg .bold { font-weight: 700; }
+svg .small { font-size: 12.5px; fill: var(--muted); }
+svg .mid { text-anchor: middle; }
+svg .end { text-anchor: end; }
+svg .commit { fill: var(--bg); stroke: var(--git); stroke-width: 2.5; }
+svg .tree { fill: var(--panel); stroke: var(--border); stroke-width: 1.5; }
+svg .blob { fill: var(--bg); stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 3; }
+svg .divider { stroke: var(--border); stroke-width: 1.5; }
+svg .tag { fill: var(--accent); }
+svg text.tag-text { fill: var(--accent-text); font-weight: 700; font-size: 13.5px; text-anchor: middle; }
+svg .link { fill: none; stroke: var(--muted); stroke-width: 1.6; marker-end: url(#arrow); }
+svg .link.strong { stroke: var(--accent); stroke-width: 2.2; marker-end: url(#arrow-accent); }
+svg .dashed { stroke-dasharray: 6 5; }
+svg .ghost { opacity: 0.45; }
+svg .ghost-tag { fill: none; stroke: var(--accent); stroke-width: 1.8; stroke-dasharray: 5 4; }
+svg text.ghost-tag-text { fill: var(--accent); font-weight: 700; font-size: 13.5px; text-anchor: middle; }
+svg .new-box { stroke: var(--new); stroke-width: 2.8; }
+svg .new-row { fill: var(--new-bg); }
+svg text.new { fill: var(--new); font-weight: 700; }
+svg .dot { fill: var(--bg); stroke: var(--git); stroke-width: 2.5; }
+svg .arrowhead { fill: var(--muted); }
+svg .arrowhead-accent { fill: var(--accent); }
+
+/* Prompts and commands */
+
+pre {
+  margin: 0.4rem 0;
+  padding: 0.8rem 1rem;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+pre.prompt {
+  white-space: pre-wrap;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.label {
+  margin: 0.6rem 0 0.1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9em;
+}
+
+.copyable { position: relative; }
+.copyable pre { padding-right: 5.5rem; }
+
+button.copy {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.45rem;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+button.copy:hover { border-color: var(--accent); }
+
+/* Mac / Windows pairs on the setup page */
+
+.os {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 0.75rem;
+  margin: 0.5rem 0;
+}
+
+.os > div {
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.os h4 { margin: 0 0 0.3rem; }
+.os p { margin: 0.3rem 0; }
+
+.trouble dt { margin-top: 1rem; font-weight: 700; }
+.trouble dd { margin: 0.3rem 0 0 0; }
+
+details { margin-top: 1.25rem; }
+summary { cursor: pointer; font-weight: 600; color: var(--accent); }
+
+/* Instructor-only reminders for things not decided yet. Remove before class. */
+
+.todo {
+  margin: 0.6rem 0;
+  padding: 0.5rem 0.8rem;
+  border: 2px dashed var(--todo-text);
+  border-radius: 6px;
+  background: var(--todo-bg);
+  color: var(--todo-text);
+  font-size: 0.9rem;
+}
+
+.todo::before { content: "TODO (instructor): "; font-weight: 700; }
+span.todo { display: inline; padding: 0.05rem 0.4rem; margin: 0; }
+
+/* Intro section before step 2: an overview, not an action step or an Inside Git box */
+
+.intro {
+  margin-top: 2rem;
+  scroll-margin-top: 3.5rem;
+}
+
+.intro > h3 { margin: 0.1rem 0 0.5rem; font-size: 1.3rem; }
+.intro p { margin: 0.45rem 0; }
+.intro ul { margin: 0.4rem 0; padding-left: 1.4rem; }
+
+/* Best-practice advice inside a step */
+
+.practice {
+  margin: 1.25rem 0 0;
+  padding: 0.9rem 1.2rem 1rem;
+  border-left: 5px solid var(--accent);
+  border-radius: 8px;
+  background: var(--callout);
+}
+
+.practice > h4 { margin: 0 0 0.4rem; font-size: 1.15rem; }
+.practice p { margin: 0.45rem 0; }
+.practice ul { margin: 0.4rem 0; padding-left: 1.4rem; }
+
+h3[id] { scroll-margin-top: 3.5rem; }
+
+.step .encourage { margin: 2rem 0; }

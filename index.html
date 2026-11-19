@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CS 191: GitHub and Deployment</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Arrowheads shared by every drawing on the page -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" class="arrowhead"/>
+    </marker>
+    <marker id="arrow-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" class="arrowhead-accent"/>
+    </marker>
+  </defs>
+</svg>
+
+<header>
+  <p class="eyebrow">CS 191</p>
+  <h1>GitHub and Deployment</h1>
+  <nav aria-label="Sections">
+    <a href="#today">Today</a>
+    <a href="setup.html">Setup</a>
+    <a href="#demo1">Demo 1: Deploy</a>
+    <a href="#demo2">Demo 2: Change</a>
+    <a href="#wrap-up">Wrap-up</a>
+    <a href="#trouble">Troubleshooting</a>
+    <a href="look-inside.html">Look inside Git</a>
+  </nav>
+</header>
+
+<main>
+
+<section id="today">
+  <h2>Today</h2>
+  <p>By the end of class, your app will be in a GitHub repository and live on the web. Then you'll change it safely: make the change on a branch, review it in a pull request, and redeploy.</p>
+  <table>
+    <thead><tr><th>Time</th><th>What we're doing</th></tr></thead>
+    <tbody>
+      <tr><td>0–6</td><td>Check your setup (step 1)</td></tr>
+      <tr><td>6–28</td><td><strong>Demo 1:</strong> put your app on GitHub and deploy it (steps 2–5)</td></tr>
+      <tr><td>28–43</td><td><strong>Demo 2:</strong> change, review, merge, redeploy (steps 6–10)</td></tr>
+      <tr><td>43–50</td><td>Wrap-up: the Final Project</td></tr>
+    </tbody>
+  </table>
+
+  <h3>How this works</h3>
+  <ul>
+    <li><strong>Follow along.</strong> The instructor does each step on the screen. Do the same step on your laptop at the same time.</li>
+    <li><strong>Copy the prompts.</strong> Use the Copy buttons, and fill in anything in [brackets].</li>
+    <li><strong>Check with your cohort.</strong> Each step ends with what you should see. If yours looks different, compare with the people next to you.</li>
+    <li><strong>Stuck?</strong> Ask your cohort first, then raise your hand. If a Git command fails, ask Codex to help you figure out why (see <a href="#trouble">Troubleshooting</a>).</li>
+  </ul>
+
+  <h3 id="which-app">Which app?</h3>
+  <p>Use the app you built on AI Build Day, in its own folder. If you don't have a working app, use the instructor's hangman game instead.</p>
+  <p><a class="button" href="hangman.zip" download>Download hangman.zip</a></p>
+  <p>Unzip it, and you'll have a <code>hangman</code> folder to use as your app. <strong>On Windows,</strong> right-click the zip and choose <strong>Extract all</strong>. Don't work inside the zip itself.</p>
+
+  <h3>Which Codex?</h3>
+  <p>The instructor will demo the <strong>Codex CLI</strong>, the version of Codex that runs in your terminal. If you already have Codex in Visual Studio Code or another editor you're comfortable with, that's fine. Use it instead. The prompts are the same.</p>
+</section>
+
+<section id="demo1">
+  <p class="eyebrow">Demo 1</p>
+  <h2>From a folder to a live website</h2>
+
+  <!-- Step 1 -->
+  <div class="step" id="step-1">
+    <h3><span class="step-number">1</span> Check your setup and start Codex</h3>
+    <p>Open a terminal (Terminal on a Mac, PowerShell on Windows) and run these two commands:</p>
+    <pre class="command">git --version</pre>
+    <pre class="command">gh auth status</pre>
+    <p>If either one fails, go to the <a href="setup.html">setup page</a> and finish setting up. Your cohort can help.</p>
+    <p>Now open a terminal <strong>in your app's folder</strong>:</p>
+    <ul>
+      <li><strong>Mac:</strong> type <code>cd</code> and a space, drag your app's folder onto the Terminal window, and press Return.</li>
+      <li><strong>Windows:</strong> open your app's folder in File Explorer, right-click an empty spot in the folder, and choose <strong>Open in Terminal</strong>.</li>
+    </ul>
+    <p>Then start Codex:</p>
+    <pre class="command">codex</pre>
+    <p>If Codex asks whether you trust this folder, say yes.</p>
+    <p class="see"><code>git version</code> followed by a number, then <code>Logged in to github.com</code> with your GitHub username. Codex opens and waits for you to type.</p>
+    <p class="alt"><strong>Using Codex in VS Code or another editor?</strong> Open your app's folder in your editor and start Codex there. The prompts below are the same.</p>
+  </div>
+
+  <!-- Intro: a map and vocabulary only. The data structures come in the Inside Git boxes after each step. -->
+  <div class="explain intro" id="git-intro">
+    <p class="eyebrow">Inside Git</p>
+    <h3>Before we start: what Git does</h3>
+    <p><strong>Git</strong> keeps a history of your whole project as a series of save points. You can see what changed, go back to an earlier version, and share your work. Nearly every software team uses it.</p>
+    <ul>
+      <li><strong>Repository:</strong> your project folder plus its history. Git keeps the history in a hidden folder named <code>.git</code>.</li>
+      <li><strong>Commit:</strong> a save point. It's a snapshot of all your files, with a message saying what changed and an ID.</li>
+      <li><strong>Two copies:</strong> there's one repository on your laptop and one on GitHub. <strong>Push</strong> sends your commits up to GitHub. <strong>Pull</strong> brings new commits down.</li>
+    </ul>
+    <figure class="figure">
+      <svg viewBox="0 0 690 200" style="max-width:690px" role="img" aria-label="Your laptop holds your app's folder, its history in .git, Git, and Codex. Push sends commits to GitHub and pull brings them back. GitHub Pages publishes the repository as a live site.">
+        <rect class="tree" x="10" y="15" width="240" height="170" rx="10"/>
+        <text class="bold" x="26" y="44">Your laptop</text>
+        <text x="26" y="76">your app's folder</text>
+        <text class="small" x="26" y="96">with its history in .git</text>
+        <text x="26" y="130">Git: records history</text>
+        <text x="26" y="158">Codex: runs Git for you</text>
+
+        <path class="link strong" d="M252,82 H338"/>
+        <text class="bold mid" x="295" y="72">push</text>
+        <path class="link strong" d="M340,122 H254"/>
+        <text class="bold mid" x="297" y="145">pull</text>
+
+        <rect class="tree" x="342" y="50" width="160" height="100" rx="10"/>
+        <text class="bold" x="358" y="80">GitHub</text>
+        <text x="358" y="106">a copy of your</text>
+        <text x="358" y="128">repository</text>
+
+        <line class="link" x1="502" y1="100" x2="536" y2="100"/>
+
+        <rect class="tree" x="540" y="50" width="140" height="100" rx="10"/>
+        <text class="bold" x="556" y="80">GitHub Pages</text>
+        <text x="556" y="106">your live</text>
+        <text x="556" y="128">website</text>
+      </svg>
+    </figure>
+    <p><strong>Who does what:</strong> <strong>Git</strong> is the tool on your laptop that records history. <strong>GitHub</strong> is a website that stores a copy of your repository. <strong>GitHub Pages</strong> is the part of GitHub that turns a repository into a live website. <strong>Codex</strong> runs the Git commands for you and explains them.</p>
+    <p>Later today, you'll see how <strong>branches</strong> and <strong>pull requests</strong> let you try a change safely before it goes live.</p>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="step" id="step-2">
+    <h3><span class="step-number">2</span> Let Codex use Git</h3>
+    <p>By default, Codex isn't allowed to change the hidden <code>.git</code> folder, where Git keeps your project's history. Without this step, it can't make commits. In Codex, type:</p>
+    <pre class="command">/permissions</pre>
+    <p>Choose <strong>Ask for Approval</strong>. With this setting, Codex stops and asks before it runs each command. That way we can carefully examine each command before it runs. You can change to a different setting later if you want.</p>
+    <p>You only need to do this once. The setting stays.</p>
+    <p class="see">The menu closes and you're back at the Codex prompt.</p>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="step" id="step-3">
+    <h3><span class="step-number">3</span> Create an empty repository on GitHub</h3>
+    <p>Now make the GitHub copy of your repository. You'll make it empty, and Codex will fill it.</p>
+    <ol>
+      <li>Go to <a href="https://github.com/new">github.com/new</a>. (Or click <strong>+</strong> at the top right of github.com and choose <strong>New repository</strong>.)</li>
+      <li><strong>Repository name:</strong> a short name for your app, with no spaces, like <code>hangman</code> or <code>study-timer</code>. It becomes part of your website's address.</li>
+      <li>Choose <strong>Public</strong>. Free GitHub Pages sites need a public repository.</li>
+      <li><strong>Leave everything else off:</strong> no README, no .gitignore, no license. The repository has to be empty, or your first push will be rejected.</li>
+      <li>Click <strong>Create repository</strong>.</li>
+      <li>Under <strong>Quick setup</strong>, copy the HTTPS address. It looks like <code>https://github.com/your-username/your-app.git</code>. Codex will ask for it in the next step.</li>
+    </ol>
+    <p class="see">A page that says your repository is empty, with a <strong>Quick setup</strong> box showing an address that ends in <code>.git</code>.</p>
+  </div>
+
+  <!-- Step 4 -->
+  <div class="step" id="step-4">
+    <h3><span class="step-number">4</span> Make your first commit and push it</h3>
+    <p>Go back to Codex and paste this prompt:</p>
+    <pre class="prompt">This folder has a web app. Create a git repository with main as the branch name, make a first commit with all the files, and push it to a new GitHub repo I have created. Before you run each command, explain in one sentence what it does. Ask me for the repo address when you are ready.</pre>
+    <p>When Codex asks for the repository name, paste the HTTPS address you copied in step 3. Pasting avoids typos.</p>
+    <p><strong>Expect a series of approval requests.</strong> Codex asks before running each Git or GitHub command. Read what each one says it will do, then approve it. Each request also lets you approve all similar commands; whether to use that is up to you.</p>
+    <p>When Codex finishes, reload your repository's page on github.com.</p>
+    <p class="see">Your app's files listed on github.com, with the commit message Codex wrote next to them.</p>
+
+    <aside class="explain" id="history">
+      <p class="eyebrow">Inside Git</p>
+      <h4>The history: a commit is a snapshot with an ID</h4>
+      <p>Codex just made your first commit: a snapshot of your whole project. Its ID is a long string of letters and numbers, usually shortened to the first seven. Each new commit will point back to the one before it, so the commits form a line through time: the <strong>history</strong>. Right now your history has exactly one commit.</p>
+      <p>A <strong>branch</strong> is just a label on a commit. Your project has one label, <code>main</code>, and it's on your only commit.</p>
+      <figure class="figure">
+        <svg viewBox="0 0 520 130" style="max-width:520px" role="img" aria-label="One commit, 7481b4d, Initial commit, with the label main on it">
+          <rect class="tag" x="50" y="8" width="70" height="26" rx="13"/>
+          <text class="tag-text" x="85" y="26">main</text>
+          <line class="link" x1="85" y1="34" x2="85" y2="56"/>
+          <rect class="commit" x="10" y="60" width="150" height="54" rx="8"/>
+          <text class="mono bold mid" x="85" y="84">7481b4d</text>
+          <text class="small mid" x="85" y="104">Initial commit</text>
+          <line class="divider dashed" x1="180" y1="87" x2="500" y2="87"/>
+          <text class="small" x="190" y="78">later commits go here, left to right →</text>
+        </svg>
+        <figcaption>The history, drawn left to right. These are the IDs from the instructor's practice run; yours will be different.</figcaption>
+      </figure>
+    </aside>
+
+    <aside class="explain" id="snapshot">
+      <p class="eyebrow">Inside Git</p>
+      <h4>The snapshot: a tree of names and hashes</h4>
+      <p>Now zoom in on that one commit. It points to a <strong>tree</strong>: a list of names, each paired with a <strong>hash</strong>. A hash is a fingerprint of the contents. Change even one letter in a file and its hash changes completely. Each hash leads either to a file's contents or, for a folder, to another tree.</p>
+      <figure class="figure">
+        <svg viewBox="0 0 680 480" style="max-width:680px" role="img" aria-label="Commit 7481b4d points to tree 16a1259, which lists nine names with hashes. The fonts folder and wordlist folder lead to their own trees, and style.css leads to its contents.">
+          <!-- commit -->
+          <rect class="commit" x="40" y="10" width="200" height="54" rx="8"/>
+          <text class="mono bold" x="54" y="34">commit 7481b4d</text>
+          <text class="small" x="54" y="54">Initial commit</text>
+          <line class="link" x1="140" y1="64" x2="140" y2="96"/>
+          <!-- root tree -->
+          <rect class="tree" x="40" y="100" width="300" height="272" rx="8"/>
+          <text class="mono bold" x="52" y="122">tree 16a1259</text>
+          <line class="divider" x1="40" y1="132" x2="340" y2="132"/>
+          <text x="56" y="150">ROADMAP.md</text><text class="mono end" x="328" y="150">37ec6aa</text>
+          <text x="56" y="176">build-words.js</text><text class="mono end" x="328" y="176">bd7ce58</text>
+          <text class="bold" x="56" y="202">fonts/</text><text class="mono end" x="328" y="202">2766195</text>
+          <text x="56" y="228">game.js</text><text class="mono end" x="328" y="228">f48ba2c</text>
+          <text x="56" y="254">index.html</text><text class="mono end" x="328" y="254">d47e8f6</text>
+          <text x="56" y="280">plan.md</text><text class="mono end" x="328" y="280">fd856a0</text>
+          <text x="56" y="306">style.css</text><text class="mono end" x="328" y="306">7b58897</text>
+          <text class="bold" x="56" y="332">wordlist/</text><text class="mono end" x="328" y="332">f345e23</text>
+          <text x="56" y="358">words.js</text><text class="mono end" x="328" y="358">3caacd3</text>
+          <!-- fonts/ tree -->
+          <line class="link" x1="340" y1="197" x2="377" y2="197"/>
+          <rect class="tree" x="380" y="150" width="285" height="110" rx="8"/>
+          <text class="mono bold" x="392" y="172">tree 2766195</text>
+          <line class="divider" x1="380" y1="182" x2="665" y2="182"/>
+          <text x="392" y="202">bricolage-grotesque.woff2</text><text class="mono end" x="655" y="202" style="font-size:12px">b908aff</text>
+          <text x="392" y="226">inter.woff2</text><text class="mono end" x="655" y="226" style="font-size:12px">91dc3e8</text>
+          <text x="392" y="250">jetbrains-mono.woff2</text><text class="mono end" x="655" y="250" style="font-size:12px">2ca6ac6</text>
+          <!-- wordlist/ tree -->
+          <line class="link" x1="340" y1="327" x2="377" y2="327"/>
+          <rect class="tree" x="380" y="280" width="285" height="110" rx="8"/>
+          <text class="mono bold" x="392" y="302">tree f345e23</text>
+          <line class="divider" x1="380" y1="312" x2="665" y2="312"/>
+          <text x="392" y="332">easy-1.txt</text><text class="mono end" x="655" y="332" style="font-size:12px">1029b5c</text>
+          <text x="392" y="356">easy-2.txt</text><text class="mono end" x="655" y="356" style="font-size:12px">62deb35</text>
+          <text class="small" x="392" y="380">… and 5 more word lists</text>
+          <!-- style.css contents -->
+          <path class="link" d="M40,301 H20 V438 H37"/>
+          <rect class="blob" x="40" y="410" width="300" height="56" rx="8"/>
+          <text class="mono bold" x="52" y="432">7b58897</text>
+          <text class="small" x="52" y="454">the contents of style.css</text>
+        </svg>
+        <figcaption>The snapshot inside one commit, drawn hanging down. It uses the hangman game's real files. If you're using hangman, your file hashes match these exactly, because a hash depends only on the contents. Your commit ID is different, because a commit also records your name and the time.</figcaption>
+      </figure>
+      <p>Notice the names live in the tree, not in the files. The file's contents are stored by their hash alone.</p>
+      <p>A commit's ID is a hash too: the fingerprint of the commit itself, which includes its tree's hash and its parent's hash. Change any file anywhere in the history, and every ID after it changes.</p>
+    </aside>
+
+    <aside class="explain" id="push">
+      <p class="eyebrow">Inside Git</p>
+      <h4>Push copies commits to GitHub</h4>
+      <p>Push copies your commits up to GitHub, then sets GitHub's <code>main</code> label to the same commit as yours.</p>
+      <figure class="figure">
+        <svg viewBox="0 0 600 220" style="max-width:600px" role="img" aria-label="Your laptop has commit 7481b4d labeled main. Push copies it to GitHub, which now also has 7481b4d labeled main.">
+          <text class="bold" x="10" y="77">Your laptop</text>
+          <rect class="tag" x="185" y="8" width="70" height="26" rx="13"/>
+          <text class="tag-text" x="220" y="26">main</text>
+          <line class="link" x1="220" y1="34" x2="220" y2="45"/>
+          <rect class="commit" x="145" y="48" width="150" height="46" rx="8"/>
+          <text class="mono bold mid" x="220" y="77">7481b4d</text>
+
+          <text class="bold" x="10" y="187">GitHub</text>
+          <rect class="tag" x="185" y="118" width="70" height="26" rx="13"/>
+          <text class="tag-text" x="220" y="136">main</text>
+          <line class="link" x1="220" y1="144" x2="220" y2="155"/>
+          <rect class="commit" x="145" y="158" width="150" height="46" rx="8"/>
+          <text class="mono bold mid" x="220" y="187">7481b4d</text>
+
+          <path class="link strong" d="M295,71 C365,71 365,181 300,181"/>
+          <text class="bold" x="375" y="122">push</text>
+          <text class="small" x="375" y="142">copies the commit up,</text>
+          <text class="small" x="375" y="158">then sets GitHub's main</text>
+        </svg>
+      </figure>
+    </aside>
+
+    <div class="practice" id="how-often">
+      <h4>How often should you commit?</h4>
+      <p><strong>Commit every time you finish one small change that works:</strong> a new feature, a bug fix, a style tweak. While you're working, that's often several times an hour. Don't build a whole project and then make one commit at the end.</p>
+      <ul>
+        <li><strong>Each commit is a save point.</strong> If something breaks, you can see exactly which change caused it and go back to the commit before it. One giant commit gives you only one save point: everything or nothing.</li>
+        <li><strong>Each commit does one thing,</strong> and your app still works after it.</li>
+        <li><strong>Write a message that says what changed,</strong> like "Add a hint button" or "Fix score not resetting", not "update" or "stuff".</li>
+        <li><strong>Push at least at the end of every work session.</strong> Commits on your laptop aren't backed up until they're on GitHub.</li>
+      </ul>
+      <p>Working with Codex? After each change you've tested and are happy with, ask:</p>
+      <pre class="prompt">Commit this change with a short message that describes what changed.</pre>
+    </div>
+  </div>
+
+  <!-- Step 5 -->
+  <div class="step" id="step-5">
+    <h3><span class="step-number">5</span> Deploy with GitHub Pages</h3>
+    <p><strong>Deploying</strong> means putting your app on a server so anyone can view it with a browser. GitHub Pages does this for free.</p>
+    <p>GitHub Pages hosts <strong>static</strong> websites. It sends your HTML, CSS, JavaScript, and image files to the browser exactly as they are. Your JavaScript runs in the visitor's browser, so games and interactive apps like hangman work fine. But Pages can't run code on a server (like Python or Node.js), and it can't host a database. An app can still save data in the visitor's own browser. Other visitors just won't see it.</p>
+    <p><strong>Not sure whether your app needs a server?</strong> Ask Codex first:</p>
+    <pre class="prompt">Does this app need a server or a database to work, or can it run on GitHub Pages as a static site?</pre>
+    <p class="encourage"><strong>If your app needs a server or a database:</strong> for today, switch to the hangman game (<a href="#which-app">download it here</a>) open a terminal in the <code>hangman</code> folder and start Codex there (as in step 1), then do steps 3–5 with it. That way you still see a deploy work. For the Final Project, look into <a href="https://www.netlify.com">Netlify</a> or <a href="https://vercel.com">Vercel</a>. They can host apps with a server and a database, and Codex can walk you through how to set that up.</p>
+    <p>Then ask Codex to deploy:</p>
+    <pre class="prompt">Turn on GitHub Pages for this repository so it serves the main branch from the top folder. Explain each command before you run it, then give me the address of my live site.</pre>
+    <p>Approve the commands as before. Then open the address Codex gives you. It looks like <code>https://your-username.github.io/your-app/</code>.</p>
+    <p class="see">Your app running on the web, the same as when you open it on your laptop. The first deploy takes a minute or two. Codex may check on its own that the site is live and tell you when it's ready. If you get a 404 page, wait a minute and reload.</p>
+    <p>Send the link to someone in your cohort and open theirs. It works on your phone, too.</p>
+
+    <aside class="explain" id="pages">
+      <p class="eyebrow">Inside Git</p>
+      <h4>Pages serves whatever <code>main</code> points to</h4>
+      <p>GitHub Pages watches the <code>main</code> label in your GitHub repository. It takes the snapshot in the commit that <code>main</code> points to, and serves those files as a website. When <code>main</code> moves to a new commit, Pages updates the site on its own. You'll see that happen in Demo 2.</p>
+    </aside>
+  </div>
+</section>
+
+<section id="demo2">
+  <p class="eyebrow">Demo 2</p>
+  <h2>Change, review, merge, redeploy</h2>
+  <p>This is how you'll add features for the Final Project. You ask Codex for a change on a <strong>branch</strong>. Then you review it in a <strong>pull request</strong> before it reaches your live site.</p>
+  <p>Today we'll make a very small change, like a color, so we can focus on the steps and finish them in class. For the Final Project, you'll use the same steps to add a new feature.</p>
+
+  <!-- Step 6 -->
+  <div class="step" id="step-6">
+    <h3><span class="step-number">6</span> Ask Codex for a change and a pull request</h3>
+    <p>Ask for a very small change you'll be able to see, like a color or a line of text. Save bigger ideas for the Final Project. The instructor's hangman game uses this prompt:</p>
+    <pre class="prompt">I want to make the orange highlight color a shade of blue instead. Can you make that change and create a pull request for me to review?</pre>
+    <p>For your own app, describe a change of your own:</p>
+    <pre class="prompt">I want to [describe a very small change you'll be able to see]. Can you make that change and create a pull request for me to review?</pre>
+    <p>Codex creates a new branch, makes the change there, commits it, pushes the branch, and opens a pull request. Expect approval requests again.</p>
+    <p class="see">Codex gives you a link to a pull request. Open it, or reload your repository's page on github.com: the <strong>Pull requests</strong> tab shows 1 open.</p>
+
+    <aside class="explain" id="branch">
+      <p class="eyebrow">Inside Git</p>
+      <h4>A branch is a second label</h4>
+      <p>Codex made a new label, <code>blue-highlight</code>, and a new commit that points back to the first one. The new label moved to the new commit. <code>main</code> didn't move, so your live site hasn't changed.</p>
+      <figure class="figure">
+        <svg viewBox="0 0 520 135" style="max-width:520px" role="img" aria-label="Commit 6dbc0d8, labeled blue-highlight, points back to commit 7481b4d, labeled main.">
+          <rect class="tag" x="50" y="8" width="70" height="26" rx="13"/>
+          <text class="tag-text" x="85" y="26">main</text>
+          <line class="link" x1="85" y1="34" x2="85" y2="62"/>
+          <rect class="commit" x="10" y="66" width="150" height="54" rx="8"/>
+          <text class="mono bold mid" x="85" y="90">7481b4d</text>
+          <text class="small mid" x="85" y="110">Initial commit</text>
+
+          <rect class="tag" x="305" y="8" width="130" height="26" rx="13"/>
+          <text class="tag-text" x="370" y="26">blue-highlight</text>
+          <line class="link" x1="370" y1="34" x2="370" y2="62"/>
+          <rect class="commit new-box" x="260" y="66" width="220" height="54" rx="8"/>
+          <text class="mono bold mid" x="370" y="90">6dbc0d8</text>
+          <text class="small mid" x="370" y="110">Change orange accent to blue</text>
+
+          <line class="link" x1="260" y1="93" x2="163" y2="93"/>
+        </svg>
+        <figcaption>Each commit points to the one before it. A branch is only a label, so making one is cheap.</figcaption>
+      </figure>
+
+      <h4>Git only stores the files that changed</h4>
+      <p>To make this change, Codex edited two files: <code>style.css</code> (the colors) and <code>index.html</code> (the little icon in the browser tab). Compare the two snapshots:</p>
+      <figure class="figure">
+        <svg viewBox="0 0 660 380" style="max-width:660px" role="img" aria-label="Two trees side by side. Seven entries have the same hash in both. index.html and style.css have new hashes in the new tree.">
+          <rect class="commit" x="20" y="10" width="260" height="46" rx="8"/>
+          <text class="mono bold mid" x="150" y="39">commit 7481b4d</text>
+          <rect class="commit new-box" x="380" y="10" width="260" height="46" rx="8"/>
+          <text class="mono bold mid" x="510" y="39">commit 6dbc0d8</text>
+          <line class="link" x1="150" y1="56" x2="150" y2="86"/>
+          <line class="link" x1="510" y1="56" x2="510" y2="86"/>
+
+          <rect class="tree" x="20" y="90" width="260" height="272" rx="8"/>
+          <text class="mono bold" x="32" y="112">tree 16a1259</text>
+          <line class="divider" x1="20" y1="122" x2="280" y2="122"/>
+          <rect class="tree new-box" x="380" y="90" width="260" height="272" rx="8"/>
+          <rect class="new-row" x="382" y="227" width="256" height="24"/>
+          <rect class="new-row" x="382" y="279" width="256" height="24"/>
+          <text class="mono bold new" x="392" y="112">tree 804726b</text>
+          <line class="divider" x1="380" y1="122" x2="640" y2="122"/>
+
+          <text x="32" y="140">ROADMAP.md</text><text class="mono end" x="268" y="140">37ec6aa</text>
+          <text x="32" y="166">build-words.js</text><text class="mono end" x="268" y="166">bd7ce58</text>
+          <text class="bold" x="32" y="192">fonts/</text><text class="mono end" x="268" y="192">2766195</text>
+          <text x="32" y="218">game.js</text><text class="mono end" x="268" y="218">f48ba2c</text>
+          <text x="32" y="244">index.html</text><text class="mono end" x="268" y="244">d47e8f6</text>
+          <text x="32" y="270">plan.md</text><text class="mono end" x="268" y="270">fd856a0</text>
+          <text x="32" y="296">style.css</text><text class="mono end" x="268" y="296">7b58897</text>
+          <text class="bold" x="32" y="322">wordlist/</text><text class="mono end" x="268" y="322">f345e23</text>
+          <text x="32" y="348">words.js</text><text class="mono end" x="268" y="348">3caacd3</text>
+
+          <text class="small mid" x="330" y="140">same</text>
+          <text class="small mid" x="330" y="166">same</text>
+          <text class="small mid" x="330" y="192">same</text>
+          <text class="small mid" x="330" y="218">same</text>
+          <text class="new mid" x="330" y="244">new</text>
+          <text class="small mid" x="330" y="270">same</text>
+          <text class="new mid" x="330" y="296">new</text>
+          <text class="small mid" x="330" y="322">same</text>
+          <text class="small mid" x="330" y="348">same</text>
+
+          <text x="392" y="140">ROADMAP.md</text><text class="mono end" x="628" y="140">37ec6aa</text>
+          <text x="392" y="166">build-words.js</text><text class="mono end" x="628" y="166">bd7ce58</text>
+          <text class="bold" x="392" y="192">fonts/</text><text class="mono end" x="628" y="192">2766195</text>
+          <text x="392" y="218">game.js</text><text class="mono end" x="628" y="218">f48ba2c</text>
+          <text class="new" x="392" y="244">index.html</text><text class="mono end new" x="628" y="244">7e692d1</text>
+          <text x="392" y="270">plan.md</text><text class="mono end" x="628" y="270">fd856a0</text>
+          <text class="new" x="392" y="296">style.css</text><text class="mono end new" x="628" y="296">3755cb8</text>
+          <text class="bold" x="392" y="322">wordlist/</text><text class="mono end" x="628" y="322">f345e23</text>
+          <text x="392" y="348">words.js</text><text class="mono end" x="628" y="348">3caacd3</text>
+        </svg>
+        <figcaption>Same hash means same contents, and Git stores those contents only once.</figcaption>
+      </figure>
+      <p>To save the new snapshot, Git stored only <strong>two new files, one new tree, and one new commit</strong>. Each changed file is stored as a complete new copy. Each unchanged file is stored only once, however many snapshots include it. Everything else is shared with the first snapshot, including the whole <code>fonts/</code> and <code>wordlist/</code> folders: 15 files that weren't copied. Change one file and Git stores one new file. That's why Git can keep thousands of commits without filling up your disk. Git also compresses everything it stores, which saves even more space.</p>
+    </aside>
+  </div>
+
+  <!-- Step 7 -->
+  <div class="step" id="step-7">
+    <h3><span class="step-number">7</span> Review the pull request</h3>
+    <p><strong>Read the difference.</strong> Open the pull request on github.com and click the <strong>Files changed</strong> tab. Lines in red were removed. Lines in green were added. Ask yourself: is this the change I asked for, and nothing else?</p>
+    <p><strong>Test it on your laptop.</strong> Open your app's folder and double-click <code>index.html</code> to open it in your browser. Your folder is on the new branch right now, so you're seeing the changed version.</p>
+    <p class="alt">If Codex tells you to start a web server to test, you can just open <code>index.html</code> in your browser instead. (This works for apps that are plain HTML and JavaScript, like hangman.)</p>
+    <p class="see">Red and green lines on github.com. On your laptop, your app shows the change. Your live site still shows the old version.</p>
+
+    <aside class="explain" id="pull-request">
+      <p class="eyebrow">Inside Git</p>
+      <h4>A pull request asks to move <code>main</code></h4>
+      <p>A <strong>pull request</strong> is a request to move the <code>main</code> label to include the branch's commit, after a person reads the difference. That person is you today. On a team, it's a teammate. Nothing moves until someone clicks Merge on the pull request.</p>
+      <figure class="figure">
+        <svg viewBox="0 0 520 165" style="max-width:520px" role="img" aria-label="On GitHub, main is on 7481b4d. The pull request asks to move main to include 6dbc0d8, which is labeled blue-highlight.">
+          <path class="link strong dashed" d="M85,38 C85,6 450,6 450,36"/>
+          <text class="small mid" x="268" y="20">pull request: please move main here</text>
+          <rect class="tag" x="50" y="40" width="70" height="26" rx="13"/>
+          <text class="tag-text" x="85" y="58">main</text>
+          <line class="link" x1="85" y1="66" x2="85" y2="94"/>
+          <rect class="commit" x="10" y="98" width="150" height="54" rx="8"/>
+          <text class="mono bold mid" x="85" y="122">7481b4d</text>
+          <text class="small mid" x="85" y="142">Initial commit</text>
+
+          <rect class="tag" x="285" y="40" width="130" height="26" rx="13"/>
+          <text class="tag-text" x="350" y="58">blue-highlight</text>
+          <rect class="ghost-tag" x="420" y="40" width="70" height="26" rx="13"/>
+          <text class="ghost-tag-text" x="455" y="58">main?</text>
+          <line class="link" x1="350" y1="66" x2="350" y2="94"/>
+          <rect class="commit" x="260" y="98" width="220" height="54" rx="8"/>
+          <text class="mono bold mid" x="370" y="122">6dbc0d8</text>
+          <text class="small mid" x="370" y="142">Change orange accent to blue</text>
+
+          <line class="link" x1="260" y1="125" x2="163" y2="125"/>
+        </svg>
+      </figure>
+    </aside>
+  </div>
+
+  <!-- Step 8 -->
+  <div class="step" id="step-8">
+    <h3><span class="step-number">8</span> Merge the pull request</h3>
+    <p>On the pull request's page on github.com, click <strong>Merge pull request</strong>, then <strong>Confirm merge</strong>.</p>
+    <p class="see">A purple <strong>Merged</strong> badge at the top of the pull request.</p>
+
+    <aside class="explain" id="merge">
+      <p class="eyebrow">Inside Git</p>
+      <h4>Merging moves <code>main</code>, and Pages updates</h4>
+      <p>GitHub made one more commit, <code>bae54ec</code>, to record the merge. It points back to <strong>both</strong> the commit <code>main</code> was on and the branch's commit. Then GitHub moved <code>main</code> to it. Because <code>main</code> moved, Pages starts publishing the new snapshot.</p>
+      <figure class="figure">
+        <svg viewBox="0 0 600 200" style="max-width:600px" role="img" aria-label="Merge commit bae54ec, labeled main, points back to both 6dbc0d8 and 7481b4d. 6dbc0d8 is labeled blue-highlight.">
+          <rect class="ghost-tag ghost" x="50" y="92" width="70" height="26" rx="13"/>
+          <text class="ghost-tag-text ghost" x="85" y="110">main</text>
+          <text class="small" x="128" y="110">was here</text>
+          <rect class="commit" x="10" y="128" width="150" height="54" rx="8"/>
+          <text class="mono bold mid" x="85" y="152">7481b4d</text>
+          <text class="small mid" x="85" y="172">Initial commit</text>
+
+          <rect class="tag" x="230" y="6" width="130" height="26" rx="13"/>
+          <text class="tag-text" x="295" y="24">blue-highlight</text>
+          <line class="link" x1="295" y1="32" x2="295" y2="48"/>
+          <rect class="commit" x="225" y="52" width="140" height="54" rx="8"/>
+          <text class="mono bold mid" x="295" y="76">6dbc0d8</text>
+          <text class="small mid" x="295" y="96">Orange → blue</text>
+
+          <rect class="tag" x="475" y="92" width="70" height="26" rx="13"/>
+          <text class="tag-text" x="510" y="110">main</text>
+          <line class="link" x1="510" y1="118" x2="510" y2="125"/>
+          <rect class="commit new-box" x="440" y="128" width="140" height="54" rx="8"/>
+          <text class="mono bold mid" x="510" y="152">bae54ec</text>
+          <text class="small mid" x="510" y="172">Merge pull request</text>
+
+          <line class="link" x1="225" y1="96" x2="162" y2="130"/>
+          <line class="link" x1="440" y1="140" x2="368" y2="100"/>
+          <line class="link" x1="440" y1="160" x2="163" y2="160"/>
+        </svg>
+        <figcaption>The merge commit's snapshot is exactly the branch's snapshot (tree <code>804726b</code>), so Git didn't store any new files or trees for it.</figcaption>
+      </figure>
+      <p><strong>Why use branches if you're working alone?</strong></p>
+      <ul>
+        <li><strong>Your live site stays safe.</strong> Pages serves whatever <code>main</code> points to. Half-finished or broken work stays on its branch and never reaches your live site until you merge it.</li>
+        <li><strong>You can try ideas you might throw away.</strong> If an experiment doesn't work out, delete the branch. <code>main</code> is untouched.</li>
+        <li><strong>You can work on several things at once.</strong> Keep each feature on its own branch and switch between them. If you find a bug in the middle of a feature, fix it on a different branch without mixing the two together.</li>
+        <li><strong>You review what the agent did.</strong> A pull request shows everything Codex changed in one place, so you read it before it goes live.</li>
+      </ul>
+      <p><strong>On a team, branches matter even more.</strong> Teammates each work on their own branch at the same time, then each merges through a pull request that someone else reviews. When branches split apart like this, a merge commit is how Git joins them back together:</p>
+      <figure class="figure">
+        <svg viewBox="0 0 600 205" style="max-width:600px" role="img" aria-label="History forks into two branches, one per teammate, and each is merged back into main.">
+          <text class="small mid" x="235" y="16">Teammate 1's branch: add-sound</text>
+          <text class="small mid" x="330" y="198">Teammate 2's branch: dark-mode</text>
+          <circle class="dot" cx="60" cy="100" r="14"/>
+          <circle class="dot" cx="180" cy="45" r="14"/>
+          <circle class="dot" cx="290" cy="45" r="14"/>
+          <circle class="dot" cx="330" cy="160" r="14"/>
+          <circle class="dot" cx="400" cy="100" r="14"/>
+          <circle class="dot" cx="520" cy="100" r="14"/>
+          <line class="link" x1="167" y1="51" x2="74" y2="93"/>
+          <line class="link" x1="276" y1="45" x2="196" y2="45"/>
+          <line class="link" x1="387" y1="93" x2="303" y2="52"/>
+          <line class="link" x1="386" y1="100" x2="76" y2="100"/>
+          <line class="link" x1="316" y1="154" x2="74" y2="107"/>
+          <line class="link" x1="506" y1="100" x2="416" y2="100"/>
+          <line class="link" x1="507" y1="107" x2="343" y2="154"/>
+          <rect class="tag" x="485" y="44" width="70" height="26" rx="13"/>
+          <text class="tag-text" x="520" y="62">main</text>
+          <line class="link" x1="520" y1="70" x2="520" y2="82"/>
+        </svg>
+        <figcaption>When two people's work overlaps, Git helps them combine it. That's for a later course; today you only need the simple case.</figcaption>
+      </figure>
+    </aside>
+  </div>
+
+  <!-- Step 9 -->
+  <div class="step" id="step-9">
+    <h3><span class="step-number">9</span> Switch back to main and pull</h3>
+    <p>Merging on GitHub doesn't change anything on your laptop. Your folder is still on the branch. Codex won't fix this unless you ask, so tell it exactly what you want:</p>
+    <pre class="prompt">I merged the pull request on GitHub. Switch back to main, pull the latest changes, and delete the old branch. Explain each command before you run it.</pre>
+    <p class="see">Codex says you're on <code>main</code> and up to date. Your app on your laptop still shows the change, because <code>main</code> now includes it.</p>
+
+    <aside class="explain" id="two-repos">
+      <p class="eyebrow">Inside Git</p>
+      <h4>Two repositories, two <code>main</code> labels</h4>
+      <p>There are two copies of your repository: one on your laptop and one on GitHub. Each has its own <code>main</code> label. Merging on GitHub moved only GitHub's label. Before you pulled, they looked like this:</p>
+      <figure class="figure">
+        <svg viewBox="0 0 600 275" style="max-width:600px" role="img" aria-label="GitHub has three commits with main on the merge commit bae54ec. The laptop has only two commits, with main still on 7481b4d and the folder on blue-highlight.">
+          <text class="bold" x="10" y="75">GitHub</text>
+          <rect class="tag" x="235" y="8" width="130" height="26" rx="13"/>
+          <text class="tag-text" x="300" y="26">blue-highlight</text>
+          <line class="link" x1="300" y1="34" x2="300" y2="46"/>
+          <rect class="tag" x="460" y="8" width="70" height="26" rx="13"/>
+          <text class="tag-text" x="495" y="26">main</text>
+          <line class="link" x1="495" y1="34" x2="495" y2="46"/>
+          <rect class="commit" x="100" y="50" width="110" height="40" rx="8"/>
+          <text class="mono bold mid" x="155" y="75">7481b4d</text>
+          <rect class="commit" x="245" y="50" width="110" height="40" rx="8"/>
+          <text class="mono bold mid" x="300" y="75">6dbc0d8</text>
+          <rect class="commit new-box" x="440" y="50" width="110" height="40" rx="8"/>
+          <text class="mono bold mid" x="495" y="75">bae54ec</text>
+          <line class="link" x1="245" y1="70" x2="213" y2="70"/>
+          <line class="link" x1="440" y1="70" x2="358" y2="70"/>
+          <path class="link" d="M480,90 C480,124 160,124 160,94"/>
+
+          <line class="divider" x1="10" y1="140" x2="590" y2="140"/>
+
+          <text class="bold" x="10" y="225">Your laptop</text>
+          <rect class="tag" x="120" y="158" width="70" height="26" rx="13"/>
+          <text class="tag-text" x="155" y="176">main</text>
+          <line class="link" x1="155" y1="184" x2="155" y2="196"/>
+          <rect class="tag" x="235" y="158" width="130" height="26" rx="13"/>
+          <text class="tag-text" x="300" y="176">blue-highlight</text>
+          <line class="link" x1="300" y1="184" x2="300" y2="196"/>
+          <rect class="commit" x="100" y="200" width="110" height="40" rx="8"/>
+          <text class="mono bold mid" x="155" y="225">7481b4d</text>
+          <rect class="commit" x="245" y="200" width="110" height="40" rx="8"/>
+          <text class="mono bold mid" x="300" y="225">6dbc0d8</text>
+          <line class="link" x1="245" y1="220" x2="213" y2="220"/>
+          <text class="small mid" x="300" y="262">your folder is here</text>
+          <text class="small" x="390" y="225">no bae54ec yet</text>
+        </svg>
+      </figure>
+      <p><strong>Pull</strong> is the mirror of push. It copies the new commits down from GitHub and moves your laptop's <code>main</code> label to match. After the pull, your laptop looks just like GitHub. Switching to <code>main</code> first makes sure your folder shows the files from the snapshot <code>main</code> points to.</p>
+    </aside>
+  </div>
+
+  <!-- Step 10 -->
+  <div class="step" id="step-10">
+    <h3><span class="step-number">10</span> See the live site update</h3>
+    <p>Open your live site again (the address from step 5) and reload the page. If you still see the old version, wait a minute, then reload while holding Shift. Pages takes a minute or two to publish.</p>
+    <p class="see">Your change, live on the web. Everyone with your link sees it now.</p>
+  </div>
+</section>
+
+<section id="wrap-up">
+  <h2>Wrap-up: the Final Project</h2>
+  <p class="callout">For the Final Project: your app on GitHub, with one or two new features added by an agent, deployed, and demoed to your cohort.</p>
+  <ol>
+    <li><strong>Put your app on GitHub and deploy it.</strong> If you finished Demo 1 today, this part is done.</li>
+    <li><strong>Add one or two features with Codex,</strong> using Demo 2: a branch and a pull request for each feature, review the difference, test it on your laptop, merge, switch back to main, and pull.</li>
+    <li><strong>Check that your live site updated.</strong></li>
+    <li><strong>Demo it to your cohort.</strong></li>
+  </ol>
+  <p><strong>Getting help:</strong> ask your cohort first, then ask for help in the Discussions on Canvas. For a Git error, start by asking Codex to explain it.</p>
+</section>
+
+<section id="trouble">
+  <h2>Troubleshooting</h2>
+  <p>When a Git or GitHub command fails, start by asking Codex:</p>
+  <pre class="prompt">That command failed. Explain what the error means in plain words, then help me fix it. Explain each command before you run it.</pre>
+  <dl class="trouble">
+    <dt><code>git</code>, <code>gh</code>, or <code>codex</code> isn't found</dt>
+    <dd>Finish the <a href="setup.html">setup page</a>. On Windows, close PowerShell and open a new window after installing anything.</dd>
+
+    <dt>Codex says it can't write to <code>.git</code>, or it can't make a commit</dt>
+    <dd>Do <a href="#step-2">step 2</a>: type <code>/permissions</code> in Codex.</dd>
+
+    <dt>The push was rejected</dt>
+    <dd>Your GitHub repository probably isn't empty. That happens if a README, .gitignore, or license was added when you created it. Ask Codex for help using the prompt above. Or delete the repository on github.com (Settings, then the bottom of the page) and redo <a href="#step-3">step 3</a> with everything left off.</dd>
+
+    <dt>GitHub says you aren't logged in, or asks for a password</dt>
+    <dd>Run <code>gh auth login</code> again, as on the <a href="setup.html">setup page</a>. Then retry.</dd>
+
+    <dt>Your live site shows a 404 page</dt>
+    <dd>Wait a minute or two and reload. If it still fails, check that the repository is Public, and that <code>index.html</code> is at the top of your repository on github.com, not inside another folder.</dd>
+
+    <dt>Your app doesn't have an <code>index.html</code>, or it needs a build step to run</dt>
+    <dd>Some apps (for example, ones made with React or Vite) have to be built before they can be deployed. Ask Codex: <em>"How do I deploy this app to GitHub Pages? Explain each step before you do it."</em></dd>
+
+    <dt>Your live site still shows the old version</dt>
+    <dd>Wait a minute, then reload while holding Shift. On github.com, the <strong>Actions</strong> tab shows whether Pages has finished publishing.</dd>
+
+    <dt>Your app on your laptop shows the wrong version</dt>
+    <dd>Your browser shows whatever branch your folder is on. Ask Codex: <em>"Which branch am I on?"</em></dd>
+
+    <dt>The hangman zip won't open properly on Windows</dt>
+    <dd>Right-click the zip and choose <strong>Extract all</strong>, then use the extracted folder.</dd>
+  </dl>
+</section>
+
+</main>
+
+<script src="site.js"></script>
+</body>
+</html>

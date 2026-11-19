@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CS 191: Look Inside Git</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <p class="eyebrow">CS 191 · Optional extras</p>
+  <h1>Look inside Git</h1>
+  <nav aria-label="Pages">
+    <a href="index.html">← Back to class</a>
+    <a href="#objects">Git's objects</a>
+    <a href="#labels">Labels</a>
+    <a href="#elsewhere">Other places to deploy</a>
+  </nav>
+</header>
+
+<main>
+
+<section>
+  <p>For the curious. The "Inside Git" boxes in class described commits, trees, hashes, and labels. These commands show you the real ones in your own repository. Run them in a terminal in your app's folder. They only read, so they can't break anything.</p>
+  <p class="note">Commands with a <code>'</code> quote mark work as written on both Mac and Windows. Type <code>q</code> to leave any output that fills the screen.</p>
+</section>
+
+<section id="objects">
+  <h2>Git's objects</h2>
+
+  <h3>The history</h3>
+  <p>See every commit, newest first, with lines showing how they connect:</p>
+  <pre class="command">git log --oneline --graph --all</pre>
+  <p>After Demo 2, you'll see the fork and the merge from the drawings in class.</p>
+
+  <h3>A commit</h3>
+  <p>Print the commit that <code>main</code> points to:</p>
+  <pre class="command">git cat-file -p main</pre>
+  <p>A commit is a short piece of text. It has a <code>tree</code> line (its snapshot), a <code>parent</code> line for each commit before it (a merge commit has two), your name and the time, and the message. The commit's ID is the hash of exactly this text. That's why your commit IDs differ from the instructor's, even for the same files.</p>
+
+  <h3>A tree</h3>
+  <p>Print the snapshot's top-level tree:</p>
+  <pre class="command">git cat-file -p 'main^{tree}'</pre>
+  <p>Each line is a type (<code>blob</code> for a file's contents, <code>tree</code> for a folder), a hash, and a name. To open a folder's tree, put its name after a colon:</p>
+  <pre class="command">git cat-file -p 'main:fonts'</pre>
+
+  <h3>A file's contents, by hash</h3>
+  <p>Copy any <code>blob</code> hash from the tree and print what it stores. Paste your hash in place of the one below; the first seven characters are enough.</p>
+  <pre class="command">git cat-file -p 7b58897</pre>
+
+  <h3>A hash is a fingerprint</h3>
+  <p>Ask Git to compute the hash of a file on your laptop, without storing anything:</p>
+  <pre class="command">git hash-object style.css</pre>
+  <p>It matches the hash for <code>style.css</code> in the tree, as long as you haven't changed the file since your last commit. Change one character, run it again, and the hash is completely different. Using the hangman game? Your file hashes match the instructor's exactly, on any computer.</p>
+
+  <h3>Compare two snapshots</h3>
+  <p>After Demo 2, compare the tree from before the change with the tree after it. (<code>main~1</code> means "the commit before <code>main</code>".)</p>
+  <pre class="command">git cat-file -p 'main~1^{tree}'</pre>
+  <pre class="command">git cat-file -p 'main^{tree}'</pre>
+  <p>Only the files that changed have new hashes. Every other line is identical, because both snapshots share those objects.</p>
+</section>
+
+<section id="labels">
+  <h2>Labels</h2>
+  <p>A branch really is just a label. Git stores it as a tiny file that holds a single commit ID:</p>
+  <pre class="command">cat .git/refs/heads/main</pre>
+  <p>If that file isn't there, Git has packed its labels into one file. This command asks Git directly:</p>
+  <pre class="command">git rev-parse main</pre>
+  <p>Your laptop also remembers where GitHub's <code>main</code> was the last time you pushed or pulled. It calls that label <code>origin/main</code>. Compare the two:</p>
+  <pre class="command">git rev-parse main origin/main</pre>
+  <p>Right after a push or pull, the two IDs are the same.</p>
+  <p>Which branch is your folder on right now? Git keeps that in one more small file:</p>
+  <pre class="command">cat .git/HEAD</pre>
+</section>
+
+<section id="elsewhere">
+  <h2>Other places to deploy</h2>
+  <p>GitHub Pages is one of many places to put a website. <a href="https://www.netlify.com">Netlify</a> and <a href="https://vercel.com">Vercel</a> also host sites for free. They can deploy straight from a GitHub repository, and they also run apps that need a build step, like ones made with React. The idea is the same: when <code>main</code> moves, your site updates.</p>
+</section>
+
+</main>
+
+<script src="site.js"></script>
+</body>
+</html>
